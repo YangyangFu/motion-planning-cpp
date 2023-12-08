@@ -1,4 +1,4 @@
-img_name=cpp-route-planning
+img_name=motion-planning-cpp
 tag=latest
 
 build:

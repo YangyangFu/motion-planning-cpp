@@ -1,10 +1,12 @@
-*.swp
-*.osm
-!map.osm
-*.o
-draw.cpp
-test.cpp
-build/
-bin/
-lib/
-.github/**
+# add cpp ignore files
+build
+install
+.cache
+.gnupg
+.local
+.nv
+.bash_history
+
+# vscode
+.vscode-server
+.dotnet

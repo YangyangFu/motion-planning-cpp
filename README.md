@@ -1,43 +1,38 @@
-# Route Planning Project
+# Motion Planning Library
+This is a motion planning library implemented in c++ and cuda, with integration of ROS.
 
-This repo contains the code for the Route Planning project.
+## library structure
 
-<img src="map.png" width="600" height="450" />
-
-## Local Environment Setup
-This repo provides a self-conatined Dockefile to setup the local environment. To setup the environment, run the following command from the `.devcontainer` directory:
-```
-make build
-```
-
-This will be a docker image in your local machine named `cpp-route-panning:latest`.  
-To build and run the project, we need run the image as a devcontainer in VSCode. 
-
-## Compiling and Running
-
-### Compiling
-To compile the project, first, create a `build` directory and change to that directory:
-```
-mkdir build && cd build
-```
-From within the `build` directory, then run `cmake` and `make` as follows:
-```
-cmake ..
-make
-```
-### Running
-The executable will be placed in the `build` directory. From within `build`, you can run the project as follows:
-```
-./OSM_A_star_search
-```
-Or to specify a map file:
-```
-./OSM_A_star_search -f ../<your_osm_file.osm>
-```
-
-## Testing
-
-The testing executable is also placed in the `build` directory. From within `build`, you can run the unit tests as follows:
-```
-./test
+```lua
+motion_planning/
+|-- include/
+|   |-- motion_planning/
+|       |-- map.h
+|       |-- robot.h
+|       |-- motion_planner.h
+|       |-- algorithms/
+|           |-- base_algorithm.h
+|           |-- a_star.h
+|           |-- rrt.h
+|           |-- cuda/
+|               |-- base_algorithm_cuda.h
+|               |-- a_star_cuda.h
+|-- src/
+|   |-- map.cpp
+|   |-- robot.cpp
+|   |-- motion_planner.cpp
+|   |-- algorithms/
+|       |-- base_algorithm.cpp
+|       |-- a_star.cpp
+|       |-- rrt.cpp
+|       |-- cuda/
+|           |-- base_algorithm_cuda.cu
+|           |-- a_star_cuda.cu
+|-- tests/
+|   |-- map_test.cpp
+|   |-- robot_test.cpp
+|   |-- motion_planner_test.cpp
+|-- CMakeLists.txt
+|-- package.xml
+|-- README.md
 ```

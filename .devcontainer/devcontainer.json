@@ -2,8 +2,9 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
 {
 	"name": "cpp",
-	"image": "motion-planning-cpp:latest",
+	"image": "motion-planning-cuda:12.3",
 	"runArgs": [
+		"--gpus=all",
 		"--shm-size=24.0gb",
 		"--rm",
 		"-it"
@@ -19,7 +20,7 @@
 		}
 	},
 	// mount the current directory into the container
-	"mounts": ["source=${localWorkspaceFolder},target=/home/developer/cpp,type=bind,consistency=cached" ]
+	"mounts": ["source=${localWorkspaceFolder},target=/home/developer,type=bind,consistency=cached" ]
 	//"remoteEnv": {
 	//	"PYTHONPATH": "/workspaces/self-driving-projects/c2-sensor-fusion/exercises"
 	//}

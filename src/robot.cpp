@@ -32,8 +32,16 @@ Pose Robot::getPose() const {
 Extent Robot::getExtent() const {
     return extent;
 }
-cv::Rect Robot::getBox() const {
+cv::RotatedRect Robot::getBox() const {
     return box;
+}
+
+double Robot::getMaxSpeed() const {
+    return maxSpeed;
+}
+
+double Robot::getMaxSteering() const {
+    return maxSteering;
 }
 
 // methods
@@ -44,21 +52,17 @@ void Robot::move(double linear, double angular) {
     updateBox();
 }
 void Robot::drawRobot(cv::Mat &image) const {
-    cv::Point center(pose.x, pose.y);
-    cv::ellipse(image, center, cv::Size(extent.x, extent.y), pose.theta * 180 / M_PI, 0, 360, cv::Scalar(0, 255, 0), 2);
-    cv::line(image, center, cv::Point(center.x + extent.x * cos(pose.theta), center.y + extent.x * sin(pose.theta)), cv::Scalar(0, 255, 0), 2);
+    cv::Point2f vertices[4];
+    box.points(vertices);
+    for (int i = 0; i < 4; i++) {
+        cv::line(image, vertices[i], vertices[(i+1)%4], cv::Scalar(0, 255, 0), 2);
+    }
 }
 void Robot::updateBox() {
     // rotate the box based on heading
-    std::vector<cv::Point2f> vertices(4);
-    vertices[0] = cv::Point2f(-extent.x, -extent.y);
-    vertices[1] = cv::Point2f(extent.x, -extent.y);
-    vertices[2] = cv::Point2f(extent.x, extent.y);
-    vertices[3] = cv::Point2f(-extent.x, extent.y);
-    for (int i = 0; i < 4; ++i) {
-        double x = vertices[i].x * cos(pose.theta) - vertices[i].y * sin(pose.theta);
-        double y = vertices[i].x * sin(pose.theta) + vertices[i].y * cos(pose.theta);
-        vertices[i] = cv::Point2f(x + pose.x, y + pose.y);
-    }
-    box = cv::boundingRect(vertices);
+    cv::Point2f center(pose.x, pose.y);
+    cv::Size2f size(2*extent.x, 2*extent.y);
+    double angle = pose.theta * 180 / M_PI; // in degrees
+
+    box = cv::RotatedRect(center, size, angle);
 }

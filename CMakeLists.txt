@@ -58,5 +58,9 @@ find_package(GTest REQUIRED)
 add_executable(test_map tests/test_map.cpp)
 target_link_libraries(test_map motion-planning ${OpenCV_LIBS} GTest::GTest GTest::Main)
 
-# add test
-add_test(NAME TestMap COMMAND test_map)
+add_executable(test_robot tests/test_robot.cpp)
+target_link_libraries(test_robot motion-planning ${OpenCV_LIBS} GTest::GTest GTest::Main)
+
+# add tests
+add_test(NAME test_map COMMAND test_map) 
+add_test(NAME test_robot COMMAND test_robot)

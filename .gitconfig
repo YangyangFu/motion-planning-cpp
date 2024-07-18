@@ -1,5 +1,5 @@
 [credential]
-	helper = "!f() { /home/developer/.vscode-server/bin/89de5a8d4d6205e5b11647eb6a74844ca23d2573/node /tmp/vscode-remote-containers-8bd5fe48-2110-451f-8c98-a74a73797b14.js git-credential-helper $*; }; f"
+	helper = "!f() { /home/developer/.vscode-server/bin/89de5a8d4d6205e5b11647eb6a74844ca23d2573/node /tmp/vscode-remote-containers-243cc462-a838-40a0-82cd-0fd3e76bc602.js git-credential-helper $*; }; f"
 	credentialStore = cache
 [credential "https://dev.azure.com"]
 	useHttpPath = true

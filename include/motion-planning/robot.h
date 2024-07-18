@@ -28,8 +28,9 @@ public:
     //getters
     Pose getPose() const;
     Extent getExtent() const;
-    cv::Rect getBox() const;
-
+    cv::RotatedRect getBox() const;
+    double getMaxSpeed() const;
+    double getMaxSteering() const;
     
     // methods
     void move(double linear, double angular);
@@ -38,7 +39,7 @@ public:
 private:
     Pose pose;
     Extent extent;
-    cv::Rect box;
+    cv::RotatedRect box;
     double maxSpeed = 1.6; // in pixel/s
     double maxSteering = 0.5; // in radians
     void updateBox();

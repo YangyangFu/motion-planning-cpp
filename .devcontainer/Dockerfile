@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgtest-dev \
     libopencv-dev \
     libpng-dev \
+    gdb \
     && rm -rf /var/lib/apt/lists/*
 
 # create a user 

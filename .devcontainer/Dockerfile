@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.3.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.3.0-devel-ubuntu20.04
 LABEL maintainer="yangyangfu <fuyy2008@gmail.com>" \
       description="Docker image for building and testing the C++ implementation of motion planning" \
       version="1.0"
@@ -12,38 +12,56 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgtest-dev \
     libopencv-dev \
     libpng-dev \
-    gdb \
+    dirmngr \
+    gnupg2 \
+    gdb \ 
     && rm -rf /var/lib/apt/lists/*
 
-# create a user 
-RUN export uid=1000 gid=1000 && \
-    mkdir -p /home/developer && \
-    mkdir -p /etc/sudoers.d && \
-    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
-    echo "developer:x:${uid}:" >> /etc/group && \
-    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
-    chmod 0440 /etc/sudoers.d/developer && \
-    chown ${uid}:${gid} -R /home/developer && \
-    mkdir -m 1777 /tmp/.X11-unix
+# set up ROS noetic keys
+RUN set -eux; \
+       key='C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654'; \
+       export GNUPGHOME="$(mktemp -d)"; \
+       gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$key"; \
+       mkdir -p /usr/share/keyrings; \
+       gpg --batch --export "$key" > /usr/share/keyrings/ros1-latest-archive-keyring.gpg; \
+       gpgconf --kill all; \
+       rm -rf "$GNUPGHOME"
 
+# setup sources.list
+RUN echo "deb [ signed-by=/usr/share/keyrings/ros1-latest-archive-keyring.gpg ] http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros1-latest.list
 
-ENV HOME /home/developer
+# setup ROS environment
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
 
-# Install IO2D to /usr/local/lib
-#USER root
-#RUN cd $HOME \
-#    && git clone --recurse-submodules https://github.com/cpp-io2d/P0267_RefImpl.git \
-#    && cd P0267_RefImpl \
-#    && mkdir build \
-#    && cd build \
-#    && cmake --config Release "-DCMAKE_BUILD_TYPE=Release" .. \
-#    && make \
-#    && make install 
+ENV ROS_DISTRO noetic
 
-# mount volume
-#RUN cd $HOME \
-#    && mkdir -p /home/developer/cpp
+# install ros packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-noetic-desktop-full=1.5.0-1* \
+    && rm -rf /var/lib/apt/lists/*
 
-# start 
-USER developer
-WORKDIR $HOME
+# Install additional dependencies if needed
+RUN apt-get update --fix-missing\
+    && apt-get -y --no-install-recommends install \
+    git \
+    gcc \
+    vim \
+    psmisc \
+    libxml2-dev \
+    libxslt-dev \
+    python3 \
+    python3-pip \ 
+    python-is-python3\
+    ros-noetic-amcl \
+    ros-noetic-base-local-planner \
+    ros-noetic-map-server \
+    ros-noetic-move-base \
+    ros-noetic-navfn \
+    && rm -rf /var/lib/apt/lists/*
+
+# python packages
+RUN pip3 install setuptools && pip3 install catkin-tools && pip3 install conan==1.59.0
+
+# bash
+RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc

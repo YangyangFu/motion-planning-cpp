@@ -1,12 +1,8 @@
-# add cpp ignore files
-build
-install
+# temporary folders
 .cache
+.dotnet
 .gnupg
 .local
 .nv
-.bash_history
-
-# vscode
 .vscode-server
-.dotnet
+
